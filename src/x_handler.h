@@ -36,6 +36,7 @@ private:
 
     void drawCredits ();
     void drawHealthBar ();
+    void drawScore ();
 
     Resources *resources_;
     XInfo      xinfo_;

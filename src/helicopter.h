@@ -9,9 +9,11 @@
     }
 
 typedef class HeliClass(head, 240, 200, Ellipse,   Border) HeliHead;
+typedef class HeliClass(hin,  220, 180, Ellipse,   Fill)   HeliHeadIn;
 typedef class HeliClass(top,  360,  20, Rectangle, Fill)   HeliTop;
 typedef class HeliClass(mid,  120,  20, Rectangle, Fill)   HeliMid;
 typedef class HeliClass(end,  80,   80, Ellipse,   Border) HeliEnd;
+typedef class HeliClass(ein,  60,   60, Ellipse,   Fill)   HeliEndIn;
 
 #undef HeliClass
 
@@ -33,6 +35,7 @@ public:
 
     void draw (XInfo *xinfo);
     void move ();
+    void setBlink () { blink_ = 100; }
 
     bool up_;
     bool down_;
@@ -53,6 +56,10 @@ private:
     HeliMid  mid_;
     HeliEnd  end_;
     HeliTop  top_;
+    HeliHeadIn headin_;
+    HeliEndIn endin_;
+
+    int blink_;
 
     static int w_;
     static int h_;

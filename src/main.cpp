@@ -42,6 +42,10 @@ int main () {
     pthread_t controlT;
     pthread_create(&controlT, NULL, control, static_cast<void*>(&controlArg));
 
+    xhandler.setShowCredit(true);
+    usleep(1000 * 2000);
+    xhandler.setShowCredit(false);
+
     /*
     // cleans credit screen
     usleep(1000 * 1000 * 2);

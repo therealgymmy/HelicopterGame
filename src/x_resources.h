@@ -13,15 +13,16 @@ struct XInfo {
     int               screen_;
     Window            window_;
     XWindowAttributes attr_;
+    Pixmap            buffer_;
 
-    Pixmap buffer_;
-
-    GC     black_;
-    GC     white_;
-    GC     grey_;
-    GC     green_;
-    GC     brown_;
-    GC     red_;
+    GC black_;
+    GC white_;
+    GC grey_;
+    GC green_;
+    GC brown_;
+    GC red_;
+    GC blue_;
+    GC navajo_;
 };
 
 inline

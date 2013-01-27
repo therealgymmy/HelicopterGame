@@ -8,9 +8,9 @@ Explosion::Explosion (int x, int y)
   w_(0), h_(0) {}
 
 void Explosion::draw (XInfo *xinfo, int x, int y) {
-    Draw::draw<attr::GREEN>(xinfo,
-                            (x - w_ / 2) / ScaleX,
-                            (y - h_ / 2) / ScaleY);
+    Draw::draw<attr::RED>(xinfo,
+                          (x - w_ / 2) / ScaleX,
+                          (y - h_ / 2) / ScaleY);
 }
 
 void Explosion::inflate () {

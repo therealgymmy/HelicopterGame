@@ -32,8 +32,8 @@ public:
     int health () const { return hp_; }
 
     void restore   () { w_ = (hp_ = 100) * 8; }
-    void incHealth () { w_ = (hp_ += 10) * 8; }
-    void decHealth () { w_ = (hp_ -= 10) * 8; }
+    void incHealth () { if (hp_ < 100) w_ = (hp_ += 10) * 8; }
+    void decHealth () { if (hp_ > 0)   w_ = (hp_ -= 10) * 8; }
 
 private:
     int x_;
@@ -44,6 +44,29 @@ private:
     int hp_;
 
     HpFrame frame_;
+};
+
+class Score : public attr::XYCoordinates <Score, attr::IsStatic> {
+
+friend class attr::XYCoordinates <Score, attr::IsStatic>;
+
+public:
+    typedef attr::XYCoordinates <Score, attr::IsStatic> Coord;
+
+    Score ();
+
+    void draw (XInfo *xinfo);
+
+    int score () const { return score_; }
+
+    void incScore (int i) { score_ += i; }
+    void decScore (int i) { score_ -= i; }
+
+private:
+    int score_;
+
+    static int x_;
+    static int y_;
 };
 
 #endif//MISC_H

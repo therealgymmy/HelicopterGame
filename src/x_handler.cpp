@@ -1,6 +1,6 @@
 #include <algorithm>
 #include <functional>
-#include <sstream>
+#include <string>
 #include <unistd.h>
 
 #include "error.h"
@@ -113,10 +113,12 @@ XHandler::XHandler (Resources *resources)
             CapRound,       // cap drawing style (line'end)
             JoinRound);     // lines join style
 
-    setupGC(xinfo_, xinfo_.grey_,  "grey");
-    setupGC(xinfo_, xinfo_.green_, "green");
-    setupGC(xinfo_, xinfo_.brown_, "brown");
-    setupGC(xinfo_, xinfo_.red_,   "red");
+    setupGC(xinfo_, xinfo_.grey_,   "grey");
+    setupGC(xinfo_, xinfo_.green_,  "green");
+    setupGC(xinfo_, xinfo_.brown_,  "#7F0000");
+    setupGC(xinfo_, xinfo_.red_,    "red");
+    setupGC(xinfo_, xinfo_.blue_,   "#1E90FF");
+    setupGC(xinfo_, xinfo_.navajo_, "#FFDEAD");
 
     XMapRaised(xinfo_.display_, xinfo_.window_);
 
@@ -134,12 +136,13 @@ const XWindowAttributes* XHandler::windowAttributes () const {
 void XHandler::draw () {
     if (!showCredit_) {
         drawBombs();
-        drawExplosions();
         drawHeli();
-        drawMissiles();
         drawTowers();
+        drawMissiles();
+        drawExplosions();
 
         drawHealthBar();
+        drawScore();
     }
     else {
         drawCredits();
@@ -166,10 +169,43 @@ void XHandler::drawCredits () {
              (PLANE_H - 200) / attr::DrawableBase::ScaleY);
 
     // output text
+#define DrawString(x, y, str) \
+    XDrawString(display, buffer, black, \
+                x / attr::DrawableBase::ScaleX, \
+                y / attr::DrawableBase::ScaleY, \
+                str.c_str(), str.length())
+
+    std::string name = "Hong Lu 234";
+    std::string s1 = "Key Maps:";
+    std::string s2 = "    Game Control";
+    std::string s3 = "        Accelerate: a";
+    std::string s4 = "        Slow down:  z";
+    std::string s5 = "    Helicopter Control";
+    std::string s6 = "        Up:    Up Key";
+    std::string s7 = "        Down:  Down Key";
+    std::string s8 = "        Left:  Left Key";
+    std::string s9 = "        Right: Right Key";
+
+    DrawString(500, 400, name);
+    DrawString(500, 500, s1);
+    DrawString(500, 600, s2);
+    DrawString(500, 700, s3);
+    DrawString(500, 800, s4);
+    DrawString(500, 900, s5);
+    DrawString(500, 1000, s6);
+    DrawString(500, 1100, s7);
+    DrawString(500, 1200, s8);
+    DrawString(500, 1300, s9);
+
+#undef DrawString
 }
 
 void XHandler::drawHealthBar () {
     resources_->healthBar_.draw(&xinfo_);
+}
+
+void XHandler::drawScore () {
+    resources_->score_.draw(&xinfo_);
 }
 
 void XHandler::drawBombs () {
@@ -207,7 +243,7 @@ void XHandler::refresh () {
     Window            &window  = xinfo_.window_;
     Pixmap            &buffer  = xinfo_.buffer_;
     GC                &draw    = xinfo_.black_;
-    GC                &erase   = xinfo_.white_;
+    GC                &erase   = xinfo_.blue_;
     XWindowAttributes &attr    = xinfo_.attr_;
 
     unsigned int winW = attr.width;

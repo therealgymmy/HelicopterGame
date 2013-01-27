@@ -103,18 +103,24 @@ void pollForEvents (EventsArg *eventsArg) {
                     */
                     case XK_d:
                         if (helicopter.right_) {
-                            resources->bombs_.addBomb(helicopter.x(),
-                                                      helicopter.y(),
+                            int x = helicopter.x() + helicopter.w() * 0.8;
+                            int y = helicopter.y() + helicopter.h() * 0.8;
+                            resources->bombs_.addBomb(x,
+                                                      y,
                                                       Bomb::FORWARD);
                         }
                         else if (helicopter.left_) {
-                            resources->bombs_.addBomb(helicopter.x(),
-                                                      helicopter.y(),
+                            int x = helicopter.x() + helicopter.w() * 0.8;
+                            int y = helicopter.y() + helicopter.h() * 0.8;
+                            resources->bombs_.addBomb(x,
+                                                      y,
                                                       Bomb::BACKWARD);
                         }
                         else {
-                            resources->bombs_.addBomb(helicopter.x(),
-                                                      helicopter.y(),
+                            int x = helicopter.x() + helicopter.w() * 0.8;
+                            int y = helicopter.y() + helicopter.h() * 0.8;
+                            resources->bombs_.addBomb(x,
+                                                      y,
                                                       Bomb::NUL);
                         }
 

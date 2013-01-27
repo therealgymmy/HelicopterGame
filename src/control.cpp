@@ -10,15 +10,21 @@ void processMovement (ControlArg *controlArg);
 static
 void detectCollision (BombList &bombs,
                       TowerList &towers,
-                      ExplosionList &explosions);
+                      ExplosionList &explosions,
+                      HealthBar &hp,
+                      Score &score);
 
 static
 void detectCollision (MissileList &mlist,
                       Helicopter &heli,
-                      HealthBar &hp);
+                      HealthBar &hp,
+                      Score &score);
 
 static
-void detectCollision (Helicopter &heli, TowerList &towers);
+void detectCollision (Helicopter &heli,
+                      TowerList &towers,
+                      HealthBar &hp,
+                      Score &score);
 
 void* control (void *controlArg) {
     processMovement(static_cast<ControlArg*>(controlArg));
@@ -36,6 +42,7 @@ void processMovement (ControlArg *controlArg) {
     TowerList     &towers     = resources->towers_;
     MissileList   &missiles   = resources->missiles_;
     HealthBar     &hp         = resources->healthBar_;
+    Score         &score      = resources->score_;
 
     while (true) {
         if (!xhandler->showCredit()) {
@@ -62,9 +69,12 @@ void processMovement (ControlArg *controlArg) {
             bombs.recharge();
 
             // collision detection
-            detectCollision(bombs, towers, explosions);
-            detectCollision(missiles, heli, hp);
-            detectCollision(heli, towers);
+            detectCollision(bombs, towers, explosions, hp, score);
+            detectCollision(missiles, heli, hp, score);
+            detectCollision(heli, towers, hp, score);
+
+            // score
+            score.incScore(1);
 
             if (pthread_mutex_unlock(mutex) == -1) {
                 error("cannot unlock mutex in control thread");
@@ -76,7 +86,9 @@ void processMovement (ControlArg *controlArg) {
 
 void detectCollision (BombList &bombs,
                       TowerList &towers,
-                      ExplosionList &explosions) {
+                      ExplosionList &explosions,
+                      HealthBar &hp,
+                      Score &score) {
     TowerList::Towers         &towerlist = towers.towers();
     BombList::Bombs           &bomblist  = bombs.bombs();
 
@@ -95,12 +107,18 @@ void detectCollision (BombList &bombs,
                 bx <= tx + Tower::Size::w() &&
                 by >= PLANE_H - th * Tower::Size::h() - Bomb::Size::h() &&
                 by <= PLANE_H) {
+                if (t_itr->hasLauncher()) {
+                    hp.incHealth();
+                    score.incScore(1000);
+                }
+
                 b_itr = bomblist.erase(b_itr);
 
                 t_itr->removeLauncher();
 
                 explosions.addExplosion(bx + Bomb::w(),
                                         by + Bomb::h());
+
             }
         }
     }
@@ -108,7 +126,8 @@ void detectCollision (BombList &bombs,
 
 void detectCollision (MissileList &mlist,
                       Helicopter &heli,
-                      HealthBar &hp) {
+                      HealthBar &hp,
+                      Score &score) {
     MissileList::Missiles &missiles = mlist.missiles();
 
     for (MissileList::Missiles::iterator itr = missiles.begin();
@@ -123,19 +142,25 @@ void detectCollision (MissileList &mlist,
             hx <= mx + Missile::Size::w() &&
             hy >= my - Helicopter::Size::h() &&
             hy <= my + Missile::Size::h()) {
+            heli.setBlink();
             hp.decHealth();
             if (hp.health() <= 0) {
                 heli.setX(500);
                 heli.setY(500);
+                score.decScore(5000);
                 hp.restore();
             }
+            score.decScore(1000);
 
             itr = missiles.erase(itr);
         }
     }
 }
 
-void detectCollision (Helicopter &heli, TowerList &towers) {
+void detectCollision (Helicopter &heli,
+                      TowerList &towers,
+                      HealthBar &hp,
+                      Score &score) {
     TowerList::Towers &towerlist = towers.towers();
     int hx = heli.x();
     int hy = heli.y();
@@ -149,8 +174,19 @@ void detectCollision (Helicopter &heli, TowerList &towers) {
             hx <= tx + Tower::Size::w() &&
             hy >= PLANE_H - th * Tower::Size::h() - Helicopter::Size::h() &&
             hy <= PLANE_H) {
+            heli.setBlink();
             heli.setX(500);
             heli.setY(500);
+
+            hp.decHealth();
+            hp.decHealth();
+            hp.decHealth();
+            if (hp.health() <= 0) {
+                score.decScore(5000);
+                hp.restore();
+            }
+
+            score.decScore(5000);
         }
     }
 }

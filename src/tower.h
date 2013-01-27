@@ -31,12 +31,14 @@ friend class attr::XYCoordinates <Tower, attr::IsMember>;
 friend class attr::WHSizes       <Tower, attr::IsStatic>;
 friend class attr::Speed         <Tower, attr::IsStatic>;
 friend class attr::Drawable      <Tower, attr::Rectangle, attr::Border>;
+friend class attr::Drawable      <Tower, attr::Rectangle, attr::Fill>;
 
 public:
     typedef attr::XYCoordinates <Tower, attr::IsMember>                Coord;
     typedef attr::WHSizes       <Tower, attr::IsStatic>                Size;
     typedef attr::Speed         <Tower, attr::IsStatic>                Speed;
     typedef attr::Drawable      <Tower, attr::Rectangle, attr::Border> Draw;
+    typedef attr::Drawable      <Tower, attr::Rectangle, attr::Fill>   Fill;
 
 
     Tower (int x, int y, int h, bool hasLauncher);

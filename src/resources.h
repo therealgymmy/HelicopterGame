@@ -16,6 +16,7 @@ struct Resources {
     TowerList     towers_;
 
     HealthBar     healthBar_;
+    Score         score_;
 };
 
 #endif//RESOURCES_H

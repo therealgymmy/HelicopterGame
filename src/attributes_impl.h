@@ -70,6 +70,10 @@ public:
                 return xinfo->brown_;
             case RED:
                 return xinfo->red_;
+            case BLUE:
+                return xinfo->blue_;
+            case NAVAJO:
+                return xinfo->navajo_;
             default:
                 error("Unknown Color");
                 return xinfo->white_;       // should never reach here

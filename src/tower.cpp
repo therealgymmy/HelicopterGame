@@ -24,6 +24,8 @@ void Tower::draw (XInfo *xinfo, int x) {
     y = xinfo->attr_.height - numBlocks_ * height;
 
     for (int i = 0; i < numBlocks_ ; ++i) {
+        reinterpret_cast<Fill&>(*this).draw<attr::NAVAJO>(xinfo, x, y + i * height);
+        Draw::draw<attr::BLACK>(xinfo, x, y + i * height);
         if (!i && hasLauncher_) {
             // draw launcher
             launcher_.draw<attr::GREY>(
@@ -31,8 +33,6 @@ void Tower::draw (XInfo *xinfo, int x) {
                     x + ((Tower::Size::w() - MLauncher::Size::w()) / 2) / ScaleX,
                     y);
         }
-
-        Draw::draw<attr::BLACK>(xinfo, x, y + i * height);
     }
 }
 

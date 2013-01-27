@@ -20,6 +20,8 @@ enum Color {
     GREEN,
     BROWN,
     RED,
+    BLUE,
+    NAVAJO,
 };
 
 // Type
